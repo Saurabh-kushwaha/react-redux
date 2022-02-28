@@ -1,25 +1,42 @@
-import logo from './logo.svg';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
+import Navbar from './components/Navbar';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import Home from './pages/Home';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import  Login  from './pages/Login';
 
 function App() {
+  const con = useSelector((state) => state.auth.isUserLogIn);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+
+    if (con) {
+      if (pathname === '/login') {
+        navigate("/");
+      } else {
+        navigate(pathname);
+      }
+    } else {
+      navigate("/login")
+    }
+    
+  }, [navigate, con, pathname]);
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar/>
+      <Routes>
+        <Route path='/' element = {<Home/>} />
+        <Route path='about' element = {<About/>} />
+        <Route path='contact' element={<Contact />} />
+        <Route path='login' element={ <Login/>}/>
+      </Routes>
     </div>
   );
 }
-
 export default App;
